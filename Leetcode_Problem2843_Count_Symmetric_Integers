@@ -1,0 +1,85 @@
+int rem(int* a)
+{
+    int temp = (*a)%10;
+    *a /= 10;
+    return temp;
+}
+int countSymmetricIntegers(int low, int high){
+    if((low >= 100 && high < 1000) || (low >= 1 && high < 10))
+        return 0;
+    int sym = 0;
+    for(int i = low ; i <= high ; i++)
+    {
+        if((i > 10 && i < 100) || (i > 1000 && i < 10000))
+        {
+            int temp = i;
+            if(i < 100)
+                sym = (rem(&temp)==temp) ? sym + 1 : sym;
+            else
+            {
+                int n1 = rem(&temp);
+                int n2 = rem(&temp);
+                int n3 = rem(&temp);
+                int n4 = rem(&temp);
+                sym = ((n1 + n2) == (n3 + n4)) ? sym + 1 : sym;
+            }
+        }
+    }
+    return sym;
+}
+
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+#define MIN(a, b) a < b ? a : b
+#define MAX(a, b) a > b ? a : b
+
+int countSymmetricIntegers(int low, int high)
+{
+    int sym = 0;
+
+    // Count symmetric numbers from 11 to 99
+    int low2 = MAX(11, low), high2 = MIN(99, high);
+    for(int i = low2; i <= high2; i++)
+        if(!(i - (i % 10) * 11))
+            sym++;
+
+    // Count symmetric numbers from 1001 to 9900
+    int low4 = MAX(1001, low), high4 = MIN(9999, high);
+    for(int i = low4; i <= high4; i++)
+        if(i % 10 + (i / 10) % 10 == (i / 100) % 10 + (i / 1000) % 10)
+            sym++;
+
+    return sym;
+}
+
+
+-------------------------------------------------------------------------------------------------------------
+
+
+
+int countSymmetricIntegers(int low, int high){
+    int* sum = (int*)calloc(11, sizeof(int));
+    int lengthCnt = 0, val, ans = 0;
+    for(int i = low; i <= high; i++){
+        lengthCnt = 1;
+        val = i;
+        while(val)
+        {
+            sum[lengthCnt] = sum[lengthCnt - 1] + (val % 10);
+            val /= 10;
+            lengthCnt++;
+        }
+        if(lengthCnt & 1)
+        {
+            lengthCnt--;
+            if(sum[lengthCnt] == sum[lengthCnt >> 1] * 2)
+                ans++;
+        }
+    }
+    return ans;
+}
